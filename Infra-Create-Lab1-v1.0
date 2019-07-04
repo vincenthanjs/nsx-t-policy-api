@@ -1,0 +1,103 @@
+{
+  "resource_type": "Infra",
+  "children": [
+    {
+      "resource_type": "ChildTier1",
+      "marked_for_delete": false,
+      "Tier1": {
+        "resource_type": "Tier1",
+        "id": "DC-01-PROD-tier-1-gw",
+        "description": "DC-01-PROD-tier-1-gw",
+        "display_name": "DC-01-PROD-tier-1-gw",
+        "failover_mode": "NON_PREEMPTIVE",
+        "tier0_path":"/infra/tier-0s/DC-01-ENVT-01-TIER-0-GW",
+        "route_advertisement_types": [
+          "TIER1_CONNECTED",
+          "TIER1_STATIC_ROUTES"
+        ],
+        "children": [
+          {        
+           "resource_type":"ChildLocaleServices",
+                    
+           "LocaleServices":{
+                        
+               "resource_type":"LocaleServices",
+               "id":  "default",
+                "edge_cluster_path": "/infra/sites/default/enforcement-points/default/edge-clusters/e1783714-e5cf-43cf-8150-bd5992a0b70e"
+                }
+        },
+          {
+            "resource_type": "ChildSegment",
+            "Segment": {
+              "resource_type": "Segment",
+              "id": "DC-01-PROD-abc-web-segment",
+              "description": "DC-01-PROD-abc-web-segment",
+              "display_name": "DC-01-PROD-abc-web-segment",
+              "transport_zone_path": "/infra/sites/default/enforcement-points/default/transport-zones/b3bd2b11-5020-4972-9492-f6f4cd4fa24b",
+              "subnets": [
+                {
+                  "gateway_address": "10.10.1.1/24"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildSegment",
+            "Segment": {
+              "resource_type": "Segment",
+              "id": "DC-01-PROD-abc-app-segment",
+              "description": "DC-01-PROD-abc-app-segment",
+              "display_name": "DC-01-PROD-abc-app-segment",
+              "transport_zone_path": "/infra/sites/default/enforcement-points/default/transport-zones/b3bd2b11-5020-4972-9492-f6f4cd4fa24b",
+              "subnets": [
+                {
+                  "gateway_address": "10.10.2.1/24"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildSegment",
+            "Segment": {
+              "resource_type": "Segment",
+              "id": "DC-01-PROD-abc-db-segment",
+              "description": "DC-01-PROD-abc-db-segment",
+              "display_name": "DC-01-PROD-abc-db-segment",
+              "transport_zone_path": "/infra/sites/default/enforcement-points/default/transport-zones/b3bd2b11-5020-4972-9492-f6f4cd4fa24b",
+              "subnets": [
+                {
+                  "gateway_address": "10.10.3.1/24"
+                }
+              ]
+            }
+          },
+          {
+             "resource_type": "ChildPolicyNat",
+             "PolicyNat": {  
+             "id": "USER",
+             "resource_type": "PolicyNat",
+             "children": [
+                {
+                   "resource_type": "ChildPolicyNatRule",
+                   "PolicyNatRule": {
+                      "resource_type": "PolicyNatRule",
+                      "id": "DC-01-PROD-abc-nat-rule-1",
+                      "action": "SNAT",
+                      "source_network": "10.10.0.0/23",
+                      "service": "",
+                      "translated_network": "30.30.30.30",
+                      "scope": [],
+                      "enabled": true,
+                      "firewall_match": "BYPASS",
+                      "display_name": "DC-01-PROD-abc-nat-rule-1",
+                      "parent_path": "/infra/tier-1s/DC-01-PROD-tier-1-gw/nat/USER"
+                   }
+                }
+             ]
+           }
+        }
+       ]
+      }
+    }
+  ]
+}

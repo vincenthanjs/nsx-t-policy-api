@@ -1,0 +1,477 @@
+{
+  "resource_type": "Infra",
+  "children": [
+    {
+      "resource_type": "ChildTier1",
+      "marked_for_delete": false,
+      "Tier1": {
+        "resource_type": "Tier1",
+        "id": "DC-01-PROD-tier-1-gw",
+        "description": "DC-01-PROD-tier-1-gw",
+        "display_name": "DC-01-PROD-tier-1-gw",
+        "failover_mode": "NON_PREEMPTIVE",
+        "tier0_path":"/infra/tier-0s/DC-01-ENVT-01-TIER-0-GW",
+        "route_advertisement_types": [
+          "TIER1_CONNECTED",
+          "TIER1_STATIC_ROUTES"
+        ],
+        "children": [
+          {        
+           "resource_type":"ChildLocaleServices",
+                    
+           "LocaleServices":{
+                        
+               "resource_type":"LocaleServices",
+               "id":  "default",
+                "edge_cluster_path": "/infra/sites/default/enforcement-points/default/edge-clusters/e1783714-e5cf-43cf-8150-bd5992a0b70e"
+                }
+        },
+          {
+            "resource_type": "ChildSegment",
+            "Segment": {
+              "resource_type": "Segment",
+              "id": "DC-01-PROD-abc-web-segment",
+              "description": "DC-01-PROD-abc-web-segment",
+              "display_name": "DC-01-PROD-abc-web-segment",
+              "transport_zone_path": "/infra/sites/default/enforcement-points/default/transport-zones/b3bd2b11-5020-4972-9492-f6f4cd4fa24b",
+              "subnets": [
+                {
+                  "gateway_address": "10.10.1.1/24"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildSegment",
+            "Segment": {
+              "resource_type": "Segment",
+              "id": "DC-01-PROD-abc-app-segment",
+              "description": "DC-01-PROD-abc-app-segment",
+              "display_name": "DC-01-PROD-abc-app-segment",
+              "transport_zone_path": "/infra/sites/default/enforcement-points/default/transport-zones/b3bd2b11-5020-4972-9492-f6f4cd4fa24b",
+              "subnets": [
+                {
+                  "gateway_address": "10.10.2.1/24"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildSegment",
+            "Segment": {
+              "resource_type": "Segment",
+              "id": "DC-01-PROD-abc-db-segment",
+              "description": "DC-01-PROD-abc-db-segment",
+              "display_name": "DC-01-PROD-abc-db-segment",
+              "transport_zone_path": "/infra/sites/default/enforcement-points/default/transport-zones/b3bd2b11-5020-4972-9492-f6f4cd4fa24b",
+              "subnets": [
+                {
+                  "gateway_address": "10.10.3.1/24"
+                }
+              ]
+            }
+          },
+          {
+             "resource_type": "ChildPolicyNat",
+             "PolicyNat": {  
+             "id": "USER",
+             "resource_type": "PolicyNat",
+             "children": [
+                {
+                   "resource_type": "ChildPolicyNatRule",
+                   "PolicyNatRule": {
+                      "resource_type": "PolicyNatRule",
+                      "id": "DC-01-PROD-abc-nat-rule-1",
+                      "action": "SNAT",
+                      "source_network": "10.10.0.0/23",
+                      "service": "",
+                      "translated_network": "30.30.30.30",
+                      "scope": [],
+                      "enabled": true,
+                      "firewall_match": "BYPASS",
+                      "display_name": "DC-01-PROD-abc-nat-rule-1",
+                      "parent_path": "/infra/tier-1s/DC-01-PROD-tier-1-gw/nat/USER"
+                   }
+                }
+             ]
+           }
+        }
+       ]
+      }
+    },
+    {
+      "resource_type": "ChildDomain",
+      "marked_for_delete": false,
+      "Domain": {
+        "id": "default",
+        "resource_type": "Domain",
+        "description": "default",
+        "display_name": "default",
+        "marked_for_delete": false,
+        "children": [
+          {
+            "resource_type": "ChildGroup",
+            "Group": {
+              "resource_type": "Group",
+              "marked_for_delete": false,
+              "description": "DC-01-PROD-abc-web-vms",
+              "display_name": "DC-01-PROD-abc-web-vms",
+              "id": "DC-01-PROD-abc-web-vms",
+              "expression": [
+                {
+                  "member_type": "VirtualMachine",
+                  "value": "DC-01-PRODabcwebvm",
+                  "key": "Tag",
+                  "operator": "EQUALS",
+                  "resource_type": "Condition"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildGroup",
+            "Group": {
+              "resource_type": "Group",
+              "marked_for_delete": false,
+              "description": "DC-01-PROD-abc-app-vms",
+              "display_name": "DC-01-PROD-abc-app-vms",
+              "id": "DC-01-PROD-abc-app-vms",
+              "expression": [
+                {
+                  "member_type": "VirtualMachine",
+                  "value": "DC-01-PRODabcappvm",
+                  "key": "Tag",
+                  "operator": "EQUALS",
+                  "resource_type": "Condition"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildGroup",
+            "Group": {
+              "resource_type": "Group",
+              "description": "DC-01-PROD-abc-db-vms",
+              "display_name": "DC-01-PROD-abc-db-vms",
+              "id": "DC-01-PROD-abc-db-vms",
+              "expression": [
+                {
+                  "member_type": "VirtualMachine",
+                  "value": "DC-01-PRODabcdbvm",
+                  "key": "Tag",
+                  "operator": "EQUALS",
+                  "resource_type": "Condition"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildSecurityPolicy",
+            "marked_for_delete": false,
+            "SecurityPolicy": {
+              "id": "DC-01-PROD-abc-intra-app-policy",
+              "resource_type": "SecurityPolicy",
+              "description": "communication map",
+              "display_name": "DC-01-PROD-abc-intra-app-policy",
+              "rules": [
+                {
+                  "resource_type": "Rule",
+                  "description": "Communication Entry",
+                  "display_name": "any-to-DC-01-PROD-abc-web",
+                  "sequence_number": 1,
+                  "source_groups": [
+                    "ANY"
+                  ],
+                  "destination_groups": [
+                    "/infra/domains/default/groups/DC-01-PROD-abc-web-vms"
+                  ],
+                  "services": [
+                    "/infra/services/HTTPS"
+                  ],
+                  "action": "ALLOW"
+                },
+                {
+                  "resource_type": "Rule",
+                  "description": "Communication Entry 2",
+                  "display_name": "DC-01-PROD-abc-web-to-app",
+                  "sequence_number": 2,
+                  "source_groups": [
+                    "/infra/domains/default/groups/DC-01-PROD-abc-web-vms"
+                  ],
+                  "destination_groups": [
+                    "/infra/domains/default/groups/DC-01-PROD-abc-app-vms"
+                  ],
+                  "services": [
+                    "/infra/services/HTTP"
+                  ],
+                  "action": "ALLOW"
+                },
+                {
+                  "resource_type": "Rule",
+                  "description": "Communication Entry 3",
+                  "display_name": "DC-01-PROD-abc-app-to-db",
+                  "sequence_number": 2,
+                  "source_groups": [
+                    "/infra/domains/default/groups/DC-01-PROD-abc-app-vms"
+                  ],
+                  "destination_groups": [
+                    "/infra/domains/default/groups/DC-01-PROD-abc-db-vms"
+                  ],
+                  "services": [
+                    "/infra/services/MySQL"
+                  ],
+                  "action": "ALLOW"
+                }
+              ]
+            }
+          },
+          {
+            "resource_type": "ChildGatewayPolicy",
+            "marked_for_delete": false,
+            "GatewayPolicy": {
+              "resource_type": "GatewayPolicy",
+              "id": "DC-01-PROD-abc-section",
+              "display_name": "DC-01-PROD-abc-section",
+              "parent_path": "/infra/domains/default",
+              "marked_for_delete": false,
+              "rules": [
+                {
+                 "source_groups": [
+                        "ANY"
+                    ],
+                    "destination_groups": [
+                        "/infra/domains/default/groups/DC-01-PROD-abc-web-vms"
+                    ],
+                    "services": [
+                        "/infra/services/HTTPS"
+                    ],
+                    "profiles": [
+                        "ANY"
+                    ],
+                    "action": "ALLOW",
+                    "logged": false,
+                    "scope": [
+                        "/infra/tier-1s/DC-01-PROD-tier-1-gw"
+                    ],
+                    "disabled": false,
+                    "notes": "",
+                    "direction": "IN_OUT",
+                    "tag": "",
+                    "ip_protocol": "IPV4_IPV6",
+                    "resource_type": "Rule",
+                    "id": "Any-to-web",
+                    "display_name": "Any-to-web"
+                },
+                                {
+                 "source_groups": [
+                        "ANY"
+                    ],
+                    "destination_groups": [
+                        "/infra/domains/default/groups/DC-01-PROD-abc-web-vms",
+                        "/infra/domains/default/groups/DC-01-PROD-abc-app-vms",
+                        "/infra/domains/default/groups/DC-01-PROD-abc-db-vms"
+                    ],
+                    "services": [
+                        "ANY"
+                    ],
+                    "profiles": [
+                        "ANY"
+                    ],
+                    "action": "DROP",
+                    "logged": false,
+                    "scope": [
+                        "/infra/tier-1s/DC-01-PROD-tier-1-gw"
+                    ],
+                    "disabled": false,
+                    "notes": "",
+                    "direction": "IN_OUT",
+                    "tag": "",
+                    "ip_protocol": "IPV4_IPV6",
+                    "resource_type": "Rule",
+                    "id": "DenyAny",
+                    "display_name": "DenyAny"
+                }
+               ]
+            }
+          }
+       ]
+    }
+   },
+    {
+      "resource_type": "ChildLBClientSslProfile",
+      "LBClientSslProfile": {
+        "resource_type": "LBClientSslProfile",
+        "id": "batchSetupClientSslProfile",
+        "cipher_group_label": "CUSTOM",
+        "session_cache_enabled": true,
+        "ciphers": [
+          "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+          "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        ],
+        "protocols": [
+          "TLS_V1_2"
+        ]
+      }
+    },
+    {
+      "resource_type": "ChildLBServerSslProfile",
+      "LBServerSslProfile": {
+        "resource_type": "LBServerSslProfile",
+        "id": "batchSetupServerSslProfile",
+        "cipher_group_label": "CUSTOM",
+        "session_cache_enabled": true,
+        "ciphers": [
+          "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+          "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        ],
+        "protocols": [
+          "TLS_V1_2"
+        ]
+      }
+    },
+    {
+      "resource_type": "ChildLBAppProfile",
+      "LBAppProfile": {
+        "resource_type": "LBHttpProfile",
+        "id": "batchSetupHttpAppProfile",
+        "x_forwarded_for": "INSERT"
+      }
+    },
+    {
+      "resource_type": "ChildLBMonitorProfile",
+      "LBMonitorProfile": {
+        "resource_type": "LBHttpMonitorProfile",
+        "id": "batchSetupHttpMonitor1",
+        "monitor_port": 80,
+        "timeout": 5,
+        "response_status_codes": [
+          200,
+          300
+        ]
+      }
+    },
+    {
+      "resource_type": "ChildLBMonitorProfile",
+      "LBMonitorProfile": {
+        "resource_type": "LBHttpsMonitorProfile",
+        "id": "batchSetupHttpsMonitor1",
+        "monitor_port": 443,
+        "timeout": 5,
+        "response_status_codes": [
+          200
+        ]
+      }
+    },
+    {
+      "resource_type": "ChildLBService",
+      "LBService": {
+        "resource_type": "LBService",
+        "id": "DC-01-PROD-abc-LbService",
+        "connectivity_path": "/infra/tier-1s/DC-01-PROD-tier-1-gw",
+        "error_log_level": "DEBUG",
+        "access_log_enabled": true
+      }
+    },
+    {
+      "resource_type": "ChildLBVirtualServer",
+      "LBVirtualServer": {
+        "resource_type": "LBVirtualServer",
+        "id": "DC-01-PROD-abc-VirtualServer1",
+        "lb_service_path": "/infra/lb-services/DC-01-PROD-abc-LbService",
+        "ip_address": "30.10.100.1",
+        "ports": [
+          "443"
+        ],
+        "pool_path": "/infra/lb-pools/DC-01-PROD-abc-web-Pool",
+        "application_profile_path": "/infra/lb-app-profiles/batchSetupHttpAppProfile",
+        "client_ssl_profile_binding": {
+          "ssl_profile_path": "/infra/lb-client-ssl-profiles/batchSetupClientSslProfile",
+          "default_certificate_path": "/infra/certificates/batchSslSignedCert",
+          "client_auth_ca_paths": [
+            "/infra/certificates/batchSslCACert"
+          ],
+          "certificate_chain_depth": 2
+        },
+        "server_ssl_profile_binding": {
+          "ssl_profile_path": "/infra/lb-server-ssl-profiles/batchSetupServerSslProfile",
+          "server_auth": "IGNORE",
+          "client_certificate_path": "/infra/certificates/batchSslSignedCert",
+          "server_auth_ca_paths": [
+            "/infra/certificates/batchSslCACert"
+          ],
+          "certificate_chain_depth": 2
+        }
+      }
+    },
+    {
+      "resource_type": "ChildLBPool",
+      "LBPool": {
+        "id": "DC-01-PROD-abc-web-Pool",
+        "resource_type": "LBPool",
+        "active_monitor_paths": [
+          "/infra/lb-monitor-profiles/batchSetupHttpsMonitor1"
+        ],
+            "algorithm": "ROUND_ROBIN",
+            "member_group": {
+                "group_path": "/infra/domains/default/groups/DC-01-PROD-abc-web-vms",
+                "ip_revision_filter": "IPV4"
+            },
+            "snat_translation": {
+                "type": "LBSnatDisabled"
+            }
+      }
+    },
+    {
+      "resource_type": "ChildLBVirtualServer",
+      "LBVirtualServer": {
+        "resource_type": "LBVirtualServer",
+        "id": "DC-01-PROD-abc-VirtualServer2",
+        "lb_service_path": "/infra/lb-services/DC-01-PROD-abc-LbService",
+        "ip_address": "10.10.200.1",
+        "ports": [
+          "80"
+        ],
+        "pool_path": "/infra/lb-pools/DC-01-PROD-abc-app-Pool",
+        "application_profile_path": "/infra/lb-app-profiles/batchSetupHttpAppProfile"
+      }
+    },
+    {
+      "resource_type": "ChildLBPool",
+      "LBPool": {
+        "id": "DC-01-PROD-abc-app-Pool",
+        "resource_type": "LBPool",
+        "active_monitor_paths": [
+          "/infra/lb-monitor-profiles/batchSetupHttpMonitor1"
+        ],
+            "algorithm": "ROUND_ROBIN",
+            "member_group": {
+                "group_path": "/infra/domains/default/groups/DC-01-PROD-abc-app-vms",
+                "ip_revision_filter": "IPV4"
+            },
+            "snat_translation": {
+                "type": "LBSnatDisabled"
+            }
+      }
+    },
+        {
+      "resource_type": "ChildTlsTrustData",
+      "TlsTrustData": {
+        "resource_type": "TlsTrustData",
+        "id": "batchSslCACert",
+        "pem_encoded": "-----BEGIN CERTIFICATE-----\nMIIExTCCA62gAwIBAgIBADANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQGEwJFVTEn\nMCUGA1UEChMeQUMgQ2FtZXJmaXJtYSBTQSBDSUYgQTgyNzQzMjg3MSMwIQYDVQQL\nExpodHRwOi8vd3d3LmNoYW1iZXJzaWduLm9yZzEgMB4GA1UEAxMXR2xvYmFsIENo\nYW1iZXJzaWduIFJvb3QwHhcNMDMwOTMwMTYxNDE4WhcNMzcwOTMwMTYxNDE4WjB9\nMQswCQYDVQQGEwJFVTEnMCUGA1UEChMeQUMgQ2FtZXJmaXJtYSBTQSBDSUYgQTgy\nNzQzMjg3MSMwIQYDVQQLExpodHRwOi8vd3d3LmNoYW1iZXJzaWduLm9yZzEgMB4G\nA1UEAxMXR2xvYmFsIENoYW1iZXJzaWduIFJvb3QwggEgMA0GCSqGSIb3DQEBAQUA\nA4IBDQAwggEIAoIBAQCicKLQn0KuWxfH2H3PFIP8T8mhtxOviteePgQKkotgVvq0\nMi+ITaFgCPS3CU6gSS9J1tPfnZdan5QEcOw/Wdm3zGaLmFIoCQLfxS+EjXqXd7/s\nQJ0lcqu1PzKY+7e3/HKE5TWH+VX6ox8Oby4o3Wmg2UIQxvi1RMLQQ3/bvOSiPGpV\neAp3qdjqGTK3L/5cPxvusZjsyq16aUXjlg9V9ubtdepl6DJWk0aJqCWKZQbua795\nB9Dxt6/tLE2Su8CoX6dnfQTyFQhwrJLWfQTSM/tMtgsL+xrJxI0DqX5c8lCrEqWh\nz0hQpe/SyBoT+rB/sYIcd2oPX9wLlY/vQ37mRQklAgEDo4IBUDCCAUwwEgYDVR0T\nAQH/BAgwBgEB/wIBDDA/BgNVHR8EODA2MDSgMqAwhi5odHRwOi8vY3JsLmNoYW1i\nZXJzaWduLm9yZy9jaGFtYmVyc2lnbnJvb3QuY3JsMB0GA1UdDgQWBBRDnDafsJ4w\nTcbOX60Qq+UDpfqpFDAOBgNVHQ8BAf8EBAMCAQYwEQYJYIZIAYb4QgEBBAQDAgAH\nMCoGA1UdEQQjMCGBH2NoYW1iZXJzaWducm9vdEBjaGFtYmVyc2lnbi5vcmcwKgYD\nVR0SBCMwIYEfY2hhbWJlcnNpZ25yb290QGNoYW1iZXJzaWduLm9yZzBbBgNVHSAE\nVDBSMFAGCysGAQQBgYcuCgEBMEEwPwYIKwYBBQUHAgEWM2h0dHA6Ly9jcHMuY2hh\nbWJlcnNpZ24ub3JnL2Nwcy9jaGFtYmVyc2lnbnJvb3QuaHRtbDANBgkqhkiG9w0B\nAQUFAAOCAQEAPDtwkfkEVCeR4e3t/mh/YV3lQWVPMvEYBZRqHN4fcNs+ezICNLUM\nbKGKfKX0j//U2K0X1S0E0T9YgOKBWYi+wONGkyT+kL0mojAt6JcmVzWJdJYY9hXi\nryQZVgICsroPFOrGimbBhkVVi76SvpykBMdJPJ7oKXqJ1/6v/2j1pReQvayZzKWG\nVwlnRtvWFsJG8eSpUPWP0ZIV018+xgBJOm5YstHRJw0lyDL4IBHNfTIzSJRUTN3c\necQwn+uOuFW114hcxWokPbLTBQNRxgfvzBRydD1ucs4YKIxKoHflCStFREest2d/\nAYoFWpO+ocH/+OcOZ6RHSXZddZAa9SaP8A==\n-----END CERTIFICATE-----\n"
+      }
+    },
+    {
+      "resource_type": "ChildTlsTrustData",
+      "TlsTrustData": {
+        "resource_type": "TlsTrustData",
+        "id": "batchSslSignedCert",
+        "pem_encoded": "-----BEGIN CERTIFICATE-----\nMIIE7zCCAtegAwIBAgICEAEwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UEBhMCVVMx\nCzAJBgNVBAgMAkNBMQswCQYDVQQHDAJQQTEPMA0GA1UECgwGVk13YXJlMQ0wCwYD\nVQQLDAROU0JVMQ4wDAYDVQQDDAVWaXZlazEiMCAGCSqGSIb3DQEJARYTdnNhcmFv\nZ2lAdm13YXJlLmNvbTAeFw0xNDA4MDYyMTE1NThaFw0xNTA4MDYyMTE1NThaMG4x\nCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEPMA0GA1UEChMGVk13YXJlMQ0wCwYD\nVQQLEwROU0JVMQ4wDAYDVQQDEwVWaXZlazEiMCAGCSqGSIb3DQEJARYTdnNhcmFv\nZ2lAdm13YXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANHv\nl6nlZEbY+PamrPYxiit3jlYY7tIOUtLNqYtANBMTNVuCQweREHCNIXmsDGDvht28\nTZm0RwO7U72ZMlUYIM9JeDKvf4SwpGyXEyCCPsrnV4ZWaazLDS+rsi0daO2ak70+\nc9pnfGIogf/tcslFUb//dsK3wJQcirq3Aii/Eswzva6tiP4TOjAA8Ujy1eLmnQVN\nIXpAeAqRmk+AKfzXS+fRjeaMQsZD0rySJ1Q2M//Y0/e9nTLUx450rIAlx/EfwhNJ\nHkNh5hCsblaCv9bUiIkIuDBiNn2zh3hUmRo/gjk94lSoG6plILOM8BY1Ro5uSqyu\nRSrJXzcOQ1ndmXjCxKUCAwEAAaOBiTCBhjAJBgNVHRMEAjAAMAsGA1UdDwQEAwIF\n4DAsBglghkgBhvhCAQ0EHxYdT3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUw\nHQYDVR0OBBYEFCKOu6UTn7XsNQVQxOpOUzOc9Yh3MB8GA1UdIwQYMBaAFOqoDj0V\n7pC6BhIjy3sVV73EfBZMMA0GCSqGSIb3DQEBBQUAA4ICAQClSkVbIb3HEJNBaRBW\nnm9cf+iU9lpMCYdQAsYAeE9ltSbfJMw8e+Yla+m8D4ZGSLzevjEyTHslACd7666q\nTBviPSlopYkMmiiwaGpTVL8qIhhxzkMOMea4AiPgZ4FUDzb/yYKGSQEIE3/5MMbP\nvUEac+n0JIiwHZZP4TgT7vPD9so2cc6dZU0CW+vTu+50zzsOUKUYAfUkk6k5SL6H\nkho+cavL38Dyjx2DdvZ/dtZkommbj+wtoluRR17wTwSD1yCqpfPAvGwbSwUwX2U+\nwEqGQsnfBYslsf81PNPzVDAsE5asf5dooOmx9LogbzVT7B27VAfcpqtaT5WH6jij\nusVzUaRVlylZHGqXQ3QeYFG4zulT4q2V9Q/CVnX8uOzRFIcgAyYkizd603EgMWPq\nAyEqu5HTeqomk+cwsyel35q9QpGl8iDjJQaCZNW7tTPobVWYcdt7VA1i0MtnNz4R\nxjb+3WKPTswawKqO1souuXpBiGptMKjb/gasDh2gH+MvGob+9XQ0HkKUvDUeaU5a\n+JdASpSsKswIx6rAsaIvNREXh3ur8ao3DEBpo/og5qNhZmnTBKcDLElgIRMjF0GD\nT0ycWSV33x4X3U+qogXOr7mAVIKBWEp/w2JeCRFbLKxLc4q7CESaYRWGSml0McmH\n0tmEO4++tc1WSc2i/WGJYsZbHA==\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\nMIIF1jCCA76gAwIBAgIJANY0bE9WZ1GVMA0GCSqGSIb3DQEBBQUAMHsxCzAJBgNV\nBAYTAlVTMQswCQYDVQQIDAJDQTELMAkGA1UEBwwCUEExDzANBgNVBAoMBlZNd2Fy\nZTENMAsGA1UECwwETlNCVTEOMAwGA1UEAwwFVml2ZWsxIjAgBgkqhkiG9w0BCQEW\nE3ZzYXJhb2dpQHZtd2FyZS5jb20wHhcNMTQwNzE2MTgwMjQ4WhcNMjQwNzEzMTgw\nMjQ4WjB7MQswCQYDVQQGEwJVUzELMAkGA1UECAwCQ0ExCzAJBgNVBAcMAlBBMQ8w\nDQYDVQQKDAZWTXdhcmUxDTALBgNVBAsMBE5TQlUxDjAMBgNVBAMMBVZpdmVrMSIw\nIAYJKoZIhvcNAQkBFhN2c2FyYW9naUB2bXdhcmUuY29tMIICIjANBgkqhkiG9w0B\nAQEFAAOCAg8AMIICCgKCAgEA3bvIkxqNzTEOSlWfMRPCKUt2hy064GP3OwR8tXqf\n0PemyT/2SgVFPtAVv3dH7qBG+CmnYXlSymgHrVb8d9Kh08Jv+utkunQmGqecUjcd\nt0ziJj+aZQx6yxfOOwmYxXjVbKRgtLFby30KgFKJ1/xC45bNGzEI99u3ZFrEfkwl\n0ebozdB6Tfjo/ZzsbtuwqGcgfWMwFqI9P/8upn7rzBTHXp4Z8zygf1+/fkIxUu9o\n5Q/E1cjaLrKBa9ETMSmpXenEQdQvT2vmj69fafvXbBA+2nZPO/6Hmhgnbni+qglM\n0h7BUpf/NXb7vybTFRhm1EO2dhQnK0IHU8qeEgxt/vyuD4JlBsUw/HqD3XJ20Qj2\nulOoRa8cQdIuDX/0gLJ92g2kCKTEE7iHa5jDdba7MqUQvOxJPJ4Mi55iuiolh88o\ne92jhS2zxImcy/IElXLxwJyWv0WUxQNX+0h+lafK9XPsZIV3K+W7PPpMvymjDNIC\nVbjvURDaHg/uRszZovfFewiIvYCR4jB5eCud4vOLY1iLyEt2CnmTCPH9No1lk2B/\n1Ej/QJOPFJC/wbDeTiTg7sgJIdTHcRMdumIMhtQHTYYXxd3u3Oy7M9fxYCnHQE14\nejh4/37Qn1bylOqACVT0u++pamlT1fc70Y1Bwq5xS/OJGRmK0FAHiWus/3QvV9Kj\nUucCAwEAAaNdMFswHQYDVR0OBBYEFOqoDj0V7pC6BhIjy3sVV73EfBZMMB8GA1Ud\nIwQYMBaAFOqoDj0V7pC6BhIjy3sVV73EfBZMMAwGA1UdEwQFMAMBAf8wCwYDVR0P\nBAQDAgEGMA0GCSqGSIb3DQEBBQUAA4ICAQCFD6o1SALwTxAMmHqt6rrwjZdrUMLe\n0vZ1lsjlr82MrUk9L1YOsSFRFGLpYMhmIC/pdaziMxEOI+RifRSI9sk/sY3XlsrL\nuI/92sE9qLV6/PGZsaHYeQcDduaqLqHj7LnsCkgoVZqYhpgpRvgiuUm8faWW9piG\nO0t/PuKpyxWRn+0dqzsH+Nhr/lMoYPqeURphphqiiqoTGcmREEYrDC+MoUsTeHy4\nPy2NNCB5J5qQpMfwfWBeLf0dXXpFk7ggF0dHW/Ma/b8g+fdVE6AswY3NG6TV8phy\nOoNCgqIIO18OuFVL2DnYDoDaEjin/Y5l6U32BAsiCTyiUrCr4+4V7Awa10ipZiPK\niQlIs0vbXD9tSyiP1yTn3tXXHE7OZnT5nE1//UQbEaQWbQcgZOCoH54M7m03aMS5\n1PHs9BHt7zj3ASDF682rsiZTKgW+hv6TTTdfgDHMEO5+ocpIXKAeN9Kx3XSp6jHt\n5yMT2IUv3BEO9i+Dj8CBwvUHU9keinWCJ3i8WbiVhDsQoSnIARX51pmZ9Hz+JelS\nCh0BJtJsWac0Ceq5u62qzRNCj2D6ZqWHjmlzJ4WnvcQMRYxrskct4kS/zX4NTZyx\nlBH6xjE5pnf45jUWkiAD9IfGC40bApHorgC/2wCCTmkL8nxIGY1jg1zHXO/cxTxp\nVcf1BfHFyi5CjA==\n-----END CERTIFICATE-----\n",
+        "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA0e+XqeVkRtj49qas9jGKK3eOVhju0g5S0s2pi0A0ExM1W4JD\nB5EQcI0heawMYO+G3bxNmbRHA7tTvZkyVRggz0l4Mq9/hLCkbJcTIII+yudXhlZp\nrMsNL6uyLR1o7ZqTvT5z2md8YiiB/+1yyUVRv/92wrfAlByKurcCKL8SzDO9rq2I\n/hM6MADxSPLV4uadBU0hekB4CpGaT4Ap/NdL59GN5oxCxkPSvJInVDYz/9jT972d\nMtTHjnSsgCXH8R/CE0keQ2HmEKxuVoK/1tSIiQi4MGI2fbOHeFSZGj+COT3iVKgb\nqmUgs4zwFjVGjm5KrK5FKslfNw5DWd2ZeMLEpQIDAQABAoIBAQCBp4I4WEa9BqWD\n11580g2uWLEcdVuReW0nagLq0GUY3sUWVfXFx46qpE7nUR14BJZ7fR9D7TXqlRfb\nwbB3I2an/ozwaLjNnzZ9JjSW4DmdoJDKk7XCFMl5BoYNHNu/2rahqt9sJHuKN9BJ\n2kEJEvmxJToYednC33nCZOI9ffxDBhZKN1krnHjouI56MZv23e06+cwwjrFUnIPI\nNNfkTTqDMU/xj5xmltrWhZIr/RPogLS4kdwRS8Q8pPvJOXQlg7+imrDxg7MckMgb\nE73uJv5sfhbsxgn9d8sYVhD9lwbb+QpXUro8f5XzVFwMpRFbDThGE0eQx7ULCWZz\n+2+/x+jFAoGBAPqDfU/EBHVBF/O0JnVFC7A26ihQUQIqUu2N3oGi/L+io2uIw8Cd\n9eHuxmwI2DPJ5KlRz7i1ZeGlZoRNN7dt3p7NhKT4O+7hyBVMDItubKkwdg2rULj6\nz9iShtKomzyZaSDA8VbNZX/qgDM7UflKcvXUA41UuJGrgiJmm3DZTqqLAoGBANaI\nml2NB6aFnd/4PN1XKZzFibS1DvcnooX+LPtR6+ky/0wst7DXF1qnp3XWVG6R86ci\nCFoTNsleryrFmKnY5oUl41EcNqpnVGU1+lth6rl4LnVL9GwtiU2h9kV5p7w0ExRk\nkVjvE4K8f8w5eDcO39QogkD0AYXpN1pj9l6EEaOPAoGAT0kqcgJx/sJZWFJeEaOG\nrYDT32p8GRlYIcNS9uik4eoRmskwW1gjKBywRCUQeGOfsU8pVSZkVmRI6/qcdbua\nR9x37NZ78YEYGFV3avHKBkpGMtFTvRf0jHDjpuyiJS3QrgMi3vwm8bNAW/acXTAI\n7nDppuN3fvMvPsAG1lKQqT0CgYAJIF6QxEMjDmQc9w5/zAl1JeIp0doFIaaEVL/N\nITsL/KNnti9KUpwnuyIgnTGSUpsu7P+19UNLZb/F7goEj7meyHHXLYAV17d7ZsRz\nxsKZiUdQrh6Dy5wftVgotHgyRXTaVTzpr6IA2cwGABvhG7zh5adE5Bx8eeNk8QO2\nGaA2eQKBgQDnpBPL0OtVcva1gOIeS41Kaa78/VxN64fKCdkJNfwr9NUz51u6RMrh\nc2zWaTp3QG062zhdSuUATVJ9kK/NgVT9Afmb21H76xE9KY3fztb1SqRCZGMjHeEr\n563mDimPiOPUATWXyZS5/HQSLIRLjJ9+mfBFVFEgFNGK55pOmyMTaQ==\n-----END RSA PRIVATE KEY-----\n",
+        "key_algo": "RSA"
+      }
+    }
+  ]
+}
+  ]
+}
